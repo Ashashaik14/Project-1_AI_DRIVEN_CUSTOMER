@@ -1,4 +1,6 @@
 # 🤖 AI Driven Customer Analytics Dashboard
+# Web Link
+ https://project-1-ai-driven-customer-6.onrender.com
 
 A full-stack Flask-based AI analytics platform for customer segmentation, churn prediction, and recommendation insights using Machine Learning.
 
