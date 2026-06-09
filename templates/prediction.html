@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h2 class="page-title">
+        AI Customer Prediction
+    </h2>
+
+    <!-- PREDICTION FORM -->
+
+    <div class="card p-4 shadow">
+
+        <h4>Predict Customer Category</h4>
+
+        <form method="POST">
+
+            <div class="row">
+
+                <div class="col-md-3">
+                    <label>Age</label>
+                    <input
+                        type="number"
+                        name="age"
+                        class="form-control"
+                        required>
+                </div>
+
+                <div class="col-md-3">
+                    <label>Annual Income</label>
+                    <input
+                        type="number"
+                        name="income"
+                        class="form-control"
+                        required>
+                </div>
+
+                <div class="col-md-3">
+                    <label>Spending Score</label>
+                    <input
+                        type="number"
+                        name="score"
+                        class="form-control"
+                        required>
+                </div>
+
+                <div class="col-md-3">
+                    <label>Purchase Amount</label>
+                    <input
+                        type="number"
+                        name="purchase"
+                        class="form-control"
+                        required>
+                </div>
+
+            </div>
+
+            <button
+                type="submit"
+                class="btn btn-primary mt-3">
+
+                Predict Customer
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- RESULT -->
+
+    {% if result %}
+
+    <div class="card mt-4 p-4 shadow">
+
+        <h4>Prediction Result</h4>
+
+        <div class="alert alert-success">
+
+            <h3>{{ result }}</h3>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+    <!-- ANALYTICS -->
+
+    <div class="row mt-4">
+
+        <div class="col-md-6">
+
+            <div class="card p-3 shadow">
+
+                <h5>Prediction Distribution</h5>
+
+                <canvas id="predictionChart"></canvas>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="card p-3 shadow">
+
+                <h5>Total Predictions</h5>
+
+                <h1>{{ history|length }}</h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- HISTORY TABLE -->
+
+    <div class="card mt-4 p-3 shadow">
+
+        <h4>Prediction History</h4>
+
+        <div class="table-responsive">
+
+            <table class="table table-striped table-bordered">
+
+                <thead>
+
+                    <tr>
+                        <th>#</th>
+                        <th>Prediction Result</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in history %}
+
+                    <tr>
+
+                        <td>{{ loop.index }}</td>
+                        <td>{{ item }}</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const historyData = {{ history|tojson }};
+
+let premium = 0;
+let regular = 0;
+
+historyData.forEach(item => {
+
+    if(item === "Premium Customer")
+        premium++;
+
+    else
+        regular++;
+
+});
+
+new Chart(
+    document.getElementById("predictionChart"),
+    {
+        type: "pie",
+        data: {
+            labels: [
+                "Premium Customer",
+                "Regular Customer"
+            ],
+            datasets: [{
+                data: [
+                    premium,
+                    regular
+                ]
+            }]
+        }
+    }
+);
+
+</script>
+
+{% endblock %}

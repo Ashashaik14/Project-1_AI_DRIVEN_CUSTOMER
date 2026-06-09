@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h2 class="page-title">
+        AI Product Recommendation System
+    </h2>
+
+    <!-- KPI CARDS -->
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card p-3 shadow">
+                <h6>Total Recommendations</h6>
+                <h2>{{ recommendations|length }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3 shadow">
+                <h6>Categories</h6>
+                <h2>{{ category_counts|length }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3 shadow">
+                <h6>AI Engine Status</h6>
+                <h2>Active</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHARTS -->
+
+    <div class="row mt-4">
+
+        <div class="col-md-6">
+
+            <div class="card p-3 shadow">
+
+                <h5>Product Categories</h5>
+
+                <canvas id="categoryChart"></canvas>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="card p-3 shadow">
+
+                <h5>Recommendation Distribution</h5>
+
+                <canvas id="recommendationChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="card mt-4 p-3 shadow">
+
+        <h4>Recommended Products</h4>
+
+        <div class="table-responsive">
+
+            <table class="table table-striped table-bordered">
+
+                <thead>
+
+                    <tr>
+                        <th>Segment</th>
+                        <th>Product</th>
+                        <th>Category</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for row in recommendations %}
+
+                    <tr>
+
+                        <td>{{ row.segment }}</td>
+                        <td>{{ row.product }}</td>
+                        <td>{{ row.category }}</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+// CATEGORY CHART
+
+new Chart(
+    document.getElementById("categoryChart"),
+    {
+        type: "pie",
+        data: {
+            labels: {{ category_counts.keys()|list|tojson }},
+            datasets: [{
+                data: {{ category_counts.values()|list|tojson }}
+            }]
+        }
+    }
+);
+
+
+// RECOMMENDATION DISTRIBUTION
+
+let recommendationLabels = [];
+let recommendationValues = [];
+
+{% for row in recommendations %}
+recommendationLabels.push("{{ row.product }}");
+recommendationValues.push(1);
+{% endfor %}
+
+new Chart(
+    document.getElementById("recommendationChart"),
+    {
+        type: "bar",
+        data: {
+            labels: recommendationLabels,
+            datasets: [{
+                label: "Recommendations",
+                data: recommendationValues
+            }]
+        }
+    }
+);
+
+</script>
+
+{% endblock %}

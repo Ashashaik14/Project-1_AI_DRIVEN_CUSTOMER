@@ -1,0 +1,37 @@
+
+---
+
+# 🚫 `.gitignore` (IMPORTANT FOR CLEAN PUSH)
+
+```gitignore
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+env/
+
+# Flask
+instance/
+
+# Dataset (optional - remove if you WANT to upload CSV)
+dataset/*.csv
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Jupyter (if used)
+.ipynb_checkpoints/
+
+# Model files (optional)
+*.pkl
+*.joblib

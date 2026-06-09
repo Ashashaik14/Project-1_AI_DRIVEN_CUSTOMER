@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container-fluid">
+
+    <h2 class="mb-4">Customer Segmentation</h2>
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <div class="card shadow p-3">
+                <h5>Segment Distribution</h5>
+                <canvas id="segmentChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow p-3">
+                <h5>Churn Distribution</h5>
+                <canvas id="churnChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card mt-4 shadow p-3">
+
+        <h4>Segmentation Data</h4>
+
+        <table class="table table-striped table-bordered">
+
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Age</th>
+                    <th>Income</th>
+                    <th>Spending</th>
+                    <th>Segment</th>
+                    <th>Churn</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for row in data %}
+                <tr>
+                    <td>{{ row.customer_id }}</td>
+                    <td>{{ row.age }}</td>
+                    <td>{{ row.annual_income }}</td>
+                    <td>{{ row.spending_score }}</td>
+                    <td>{{ row.segment }}</td>
+                    <td>{{ row.churn }}</td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+new Chart(document.getElementById("segmentChart"), {
+    type: "pie",
+    data: {
+        labels: {{ segment_counts.keys()|list|tojson }},
+        datasets: [{
+            data: {{ segment_counts.values()|list|tojson }}
+        }]
+    }
+});
+
+new Chart(document.getElementById("churnChart"), {
+    type: "bar",
+    data: {
+        labels: {{ churn_counts.keys()|list|tojson }},
+        datasets: [{
+            label: "Customers",
+            data: {{ churn_counts.values()|list|tojson }}
+        }]
+    }
+});
+
+</script>
+
+{% endblock %}

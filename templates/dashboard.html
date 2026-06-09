@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h2 class="page-title">
+        AI Customer Analytics Dashboard
+    </h2>
+
+    <!-- KPI CARDS -->
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow">
+                <h6>Total Customers</h6>
+                <h2>{{ total }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow">
+                <h6>Average Income</h6>
+                <h2>₹ {{ avg_income }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow">
+                <h6>Average Spending</h6>
+                <h2>{{ avg_spending }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow">
+                <h6>Total Revenue</h6>
+                <h2>₹ {{ total_revenue }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHART ROW 1 -->
+
+    <div class="row mt-4">
+
+        <div class="col-md-6">
+            <div class="card p-3 shadow">
+                <h5>Customer Segments</h5>
+                <canvas id="segmentChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card p-3 shadow">
+                <h5>Churn Analysis</h5>
+                <canvas id="churnChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHART ROW 2 -->
+
+    <div class="row mt-4">
+
+        <div class="col-md-6">
+            <div class="card p-3 shadow">
+                <h5>Gender Distribution</h5>
+                <canvas id="genderChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card p-3 shadow">
+                <h5>Age Distribution</h5>
+                <canvas id="ageChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHART ROW 3 -->
+
+    <div class="row mt-4">
+
+        <div class="col-md-6">
+            <div class="card p-3 shadow">
+                <h5>Income Distribution</h5>
+                <canvas id="incomeChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card p-3 shadow">
+                <h5>Spending Score Distribution</h5>
+                <canvas id="spendingChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CUSTOMER TABLE -->
+
+    <div class="card mt-4 p-3 shadow">
+
+        <h4>Customer Analytics Table</h4>
+
+        <div class="table-responsive">
+
+            <table class="table table-striped table-bordered">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Income</th>
+                        <th>Spending</th>
+                        <th>Purchase</th>
+                        <th>Segment</th>
+                        <th>Churn</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for row in table_data %}
+
+                    <tr>
+
+                        <td>{{ row.customer_id }}</td>
+                        <td>{{ row.age }}</td>
+                        <td>{{ row.gender }}</td>
+                        <td>{{ row.annual_income }}</td>
+                        <td>{{ row.spending_score }}</td>
+                        <td>{{ row.purchase_amount }}</td>
+                        <td>{{ row.segment }}</td>
+                        <td>{{ row.churn }}</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+// =====================
+// SEGMENT CHART
+// =====================
+
+new Chart(
+    document.getElementById("segmentChart"),
+    {
+        type: "pie",
+        data: {
+            labels: {{ cluster_counts.keys()|list|tojson }},
+            datasets: [{
+                data: {{ cluster_counts.values()|list|tojson }}
+            }]
+        }
+    }
+);
+
+
+// =====================
+// CHURN CHART
+// =====================
+
+new Chart(
+    document.getElementById("churnChart"),
+    {
+        type: "doughnut",
+        data: {
+            labels: {{ churn_counts.keys()|list|tojson }},
+            datasets: [{
+                data: {{ churn_counts.values()|list|tojson }}
+            }]
+        }
+    }
+);
+
+
+// =====================
+// GENDER CHART
+// =====================
+
+new Chart(
+    document.getElementById("genderChart"),
+    {
+        type: "pie",
+        data: {
+            labels: {{ gender_counts.keys()|list|tojson }},
+            datasets: [{
+                data: {{ gender_counts.values()|list|tojson }}
+            }]
+        }
+    }
+);
+
+
+// =====================
+// AGE CHART
+// =====================
+
+new Chart(
+    document.getElementById("ageChart"),
+    {
+        type: "bar",
+        data: {
+            labels: {{ age_counts.keys()|list|tojson }},
+            datasets: [{
+                label: "Customers",
+                data: {{ age_counts.values()|list|tojson }}
+            }]
+        }
+    }
+);
+
+
+// =====================
+// INCOME CHART
+// =====================
+
+new Chart(
+    document.getElementById("incomeChart"),
+    {
+        type: "bar",
+        data: {
+            labels: {{ income_counts.keys()|list|tojson }},
+            datasets: [{
+                label: "Income Groups",
+                data: {{ income_counts.values()|list|tojson }}
+            }]
+        }
+    }
+);
+
+
+// =====================
+// SPENDING CHART
+// =====================
+
+new Chart(
+    document.getElementById("spendingChart"),
+    {
+        type: "bar",
+        data: {
+            labels: {{ spending_counts.keys()|list|tojson }},
+            datasets: [{
+                label: "Spending Score",
+                data: {{ spending_counts.values()|list|tojson }}
+            }]
+        }
+    }
+);
+
+</script>
+
+{% endblock %}

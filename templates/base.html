@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Customer Intelligence Platform</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            background:#0f172a;
+            color:white;
+            font-family:Segoe UI, sans-serif;
+        }
+
+        .sidebar{
+            width:260px;
+            height:100vh;
+            position:fixed;
+            top:0;
+            left:0;
+            background:#111827;
+            padding:20px;
+            overflow-y:auto;
+            border-right:1px solid #1f2937;
+        }
+
+        .logo{
+            text-align:center;
+            margin-bottom:30px;
+        }
+
+        .logo h3{
+            color:#38bdf8;
+            font-weight:bold;
+        }
+
+        .sidebar a{
+            display:block;
+            text-decoration:none;
+            color:#cbd5e1;
+            padding:12px 15px;
+            margin-bottom:8px;
+            border-radius:10px;
+            transition:0.3s;
+        }
+
+        .sidebar a:hover{
+            background:#1e293b;
+            color:white;
+            transform:translateX(5px);
+        }
+
+        .sidebar i{
+            width:25px;
+        }
+
+        .content{
+            margin-left:270px;
+            padding:25px;
+        }
+
+        .card{
+            background:#1e293b;
+            border:none;
+            border-radius:15px;
+            color:white;
+        }
+
+        .table{
+            color:white;
+        }
+
+        .table thead{
+            background:#334155;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd){
+            background:#1e293b;
+        }
+
+        .btn-primary{
+            background:#2563eb;
+            border:none;
+        }
+
+        .btn-success{
+            border:none;
+        }
+
+        canvas{
+            max-height:350px;
+        }
+
+        .page-title{
+            font-size:28px;
+            font-weight:bold;
+            margin-bottom:20px;
+        }
+
+        @media(max-width:768px){
+
+            .sidebar{
+                width:100%;
+                height:auto;
+                position:relative;
+            }
+
+            .content{
+                margin-left:0;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+    <div class="logo">
+        <h3>
+            <i class="fa-solid fa-brain"></i>
+            AI Platform
+        </h3>
+    </div>
+
+    <a href="/dashboard">
+        <i class="fa-solid fa-chart-line"></i>
+        Dashboard
+    </a>
+
+    <a href="/customers">
+        <i class="fa-solid fa-users"></i>
+        Customers
+    </a>
+
+    <a href="/segmentation">
+        <i class="fa-solid fa-layer-group"></i>
+        Segmentation
+    </a>
+    <a href="/churn">Churn Analysis</a>
+
+    <a href="/prediction">
+        <i class="fa-solid fa-robot"></i>
+        Prediction
+    </a>
+
+    <a href="/recommendation">
+        <i class="fa-solid fa-lightbulb"></i>
+        Recommendation
+    </a>
+
+    <a href="/churn">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Churn Analysis
+    </a>
+
+    <a href="/download_report">
+        <i class="fa-solid fa-file-pdf"></i>
+        Download Report
+    </a>
+
+    <a href="/login">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        Logout
+    </a>
+
+</div>
+
+<!-- CONTENT -->
+
+<div class="content">
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h2 class="mb-4">Customer Analytics</h2>
+
+    <!-- KPI CARDS -->
+    <div class="row">
+
+        <div class="col-md-3">
+            <div class="card shadow border-0 p-3 text-center">
+                <h6>Total Customers</h6>
+                <h2>{{ customers|length }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow border-0 p-3 text-center">
+                <h6>Male Customers</h6>
+                <h2>{{ gender_counts.get('M',0) }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow border-0 p-3 text-center">
+                <h6>Female Customers</h6>
+                <h2>{{ gender_counts.get('F',0) }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow border-0 p-3 text-center">
+                <h6>Average Purchase</h6>
+                <h2>₹ {{ avg_purchase }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHARTS ROW 1 -->
+    <div class="row mt-4">
+
+        <div class="col-md-6">
+            <div class="card shadow p-3">
+                <h5>Gender Distribution</h5>
+                <canvas id="genderChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow p-3">
+                <h5>Age Group Distribution</h5>
+                <canvas id="ageChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHARTS ROW 2 -->
+    <div class="row mt-4">
+
+        <div class="col-md-6">
+            <div class="card shadow p-3">
+                <h5>Income Distribution</h5>
+                <canvas id="incomeChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow p-3">
+                <h5>Spending Score Distribution</h5>
+                <canvas id="spendingChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHARTS ROW 3 -->
+    <div class="row mt-4">
+
+        <div class="col-md-12">
+            <div class="card shadow p-3">
+                <h5>Purchase Amount Distribution</h5>
+                <canvas id="purchaseChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SEARCH -->
+    <div class="card shadow mt-4 p-3">
+
+        <div class="d-flex justify-content-between align-items-center">
+            <h4>Customer Dataset</h4>
+
+            <input
+                type="text"
+                id="searchInput"
+                class="form-control w-25"
+                placeholder="Search Customer..."
+            >
+        </div>
+
+        <div class="table-responsive mt-3">
+
+            <table
+                class="table table-striped table-bordered table-hover"
+                id="customerTable"
+            >
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Income</th>
+                        <th>Spending</th>
+                        <th>Purchase</th>
+                        <th>Last Purchase</th>
+                        <th>Segment</th>
+                        <th>Churn</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for c in customers %}
+
+                    <tr>
+                        <td>{{ c.customer_id }}</td>
+                        <td>{{ c.age }}</td>
+                        <td>{{ c.gender }}</td>
+                        <td>{{ c.annual_income }}</td>
+                        <td>{{ c.spending_score }}</td>
+                        <td>{{ c.purchase_amount }}</td>
+                        <td>{{ c.last_purchase_days }}</td>
+                        <td>{{ c.segment }}</td>
+                        <td>{{ c.churn }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+// Gender Chart
+new Chart(document.getElementById("genderChart"), {
+    type: "pie",
+    data: {
+        labels: {{ gender_counts.keys()|list|tojson }},
+        datasets: [{
+            data: {{ gender_counts.values()|list|tojson }}
+        }]
+    }
+});
+
+// Age Chart
+new Chart(document.getElementById("ageChart"), {
+    type: "bar",
+    data: {
+        labels: {{ age_counts.keys()|list|tojson }},
+        datasets: [{
+            label: "Customers",
+            data: {{ age_counts.values()|list|tojson }}
+        }]
+    }
+});
+
+// Income Chart
+new Chart(document.getElementById("incomeChart"), {
+    type: "bar",
+    data: {
+        labels: {{ income_counts.keys()|list|tojson }},
+        datasets: [{
+            label: "Income Groups",
+            data: {{ income_counts.values()|list|tojson }}
+        }]
+    }
+});
+
+// Spending Chart
+new Chart(document.getElementById("spendingChart"), {
+    type: "bar",
+    data: {
+        labels: {{ spending_counts.keys()|list|tojson }},
+        datasets: [{
+            label: "Customers",
+            data: {{ spending_counts.values()|list|tojson }}
+        }]
+    }
+});
+
+// Purchase Chart
+new Chart(document.getElementById("purchaseChart"), {
+    type: "line",
+    data: {
+        labels: {{ purchase_counts.keys()|list|tojson }},
+        datasets: [{
+            label: "Purchase Distribution",
+            data: {{ purchase_counts.values()|list|tojson }},
+            fill: false
+        }]
+    }
+});
+
+// Search Table
+document.getElementById("searchInput").addEventListener("keyup", function() {
+
+    let value = this.value.toLowerCase();
+
+    let rows = document.querySelectorAll("#customerTable tbody tr");
+
+    rows.forEach(function(row){
+
+        row.style.display =
+            row.innerText.toLowerCase().includes(value)
+            ? ""
+            : "none";
+
+    });
+
+});
+
+</script>
+
+{% endblock %}
